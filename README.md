@@ -2,15 +2,17 @@
 
 <Hr>
 
-| TUGAS PERTEMUAN 11 |
-| PEMROGRAMAN WEB |
-| TEKNIK INFORMATIKA |
-| UNIVERSITAS PELITA BANGSA |
-| --- | --- |
+TUGAS PERTEMUAN 11<br>
+PEMROGRAMAN WEB<br>
+TEKNIK INFORMATIKA<br>
+UNIVERSITAS PELITA BANGSA<br>
+
 | NAMA  :| GUNAWAN |
+| --- | --- |
 | NIM   :| 312010191 |
 | KELAS :| TI.20.B1 |
 | DOSEN :| Agung Nugroho,S.Kom.,M.Kom |
+
 <Hr>
 
 # Pemrograman Web: PHP  Framework (Codeigniter)
