@@ -64,3 +64,4 @@ class FrameworkException extends RuntimeException implements ExceptionInterface
         return new static(lang('Fabricator.createFailed', [$table, $reason]));
     }
 }
+?>

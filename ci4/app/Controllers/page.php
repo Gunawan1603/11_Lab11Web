@@ -33,5 +33,6 @@ class Page extends BaseController
     {
         echo "ini halaman Term of Services";
     }
+
 }
 ?>

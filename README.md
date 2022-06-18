@@ -697,6 +697,13 @@ $row['id']);?>">Hapus</a>
 
 Gambar 42.admin_index.php
 
+Selanjutnya kita buat template halaman admin **di app/Views/template** dengan nama : 
+`admin_header.php`
+
+`admin_footer.php`
+
+lalu buat `adminstyle.css` **di folder ci4/public**
+
 Tambahkan routing untuk menu admin seperti berikut:
 ```
 $routes->group('admin', function($routes) {
@@ -712,9 +719,369 @@ Gambar 43.add routing.php
 
 Akses menu admin dengan url http://localhost:8080/admin/artikel
 
-![11_Lab11Web](Gambar/47.Gambar_ERROR.jpg)
+![11_Lab11Web](Gambar/50.Gambar_Admin_index.jpg)
 
-Gambar 44.ERROR
+Gambar 44.Admin index
+
+**`Menambah Data Artikel`**
+
+Tambahkan fungsi/method baru pada **Controller Artikel** dengan nama **add()**.
+```
+public function add()
+{
+// validasi data.
+$validation = \Config\Services::validation();
+$validation->setRules(['judul' => 'required']);
+$isDataValid = $validation->withRequest($this->request)->run();
+if ($isDataValid)
+{
+$artikel = new ArtikelModel();
+$artikel->insert([
+'judul' => $this->request->getPost('judul'),
+'isi' => $this->request->getPost('isi'),
+'slug' => url_title($this->request->getPost('judul')),
+]);
+return redirect('admin/artikel');
+}
+$title = "Tambah Artikel";
+return view('artikel/form_add', compact('title'));
+}
+```
+![11_Lab11Web](Gambar/51.Gambar_Controller_add.jpg)
+
+Gambar 45.Controller_add
+
+Kemudian buat view untuk form tambah dengan nama **form_add.php**
+```
+<?= $this->include('template/admin_header'); ?>
+<h2><?= $title; ?></h2>
+<form action="" method="post">
+<p>
+<input type="text" name="judul">
+</p>
+<p>
+<textarea name="isi" cols="50" rows="10"></textarea>
+</p>
+<p><input type="submit" value="Kirim" class="btn btn-large"></p>
+</form>
+<?= $this->include('template/admin_footer'); ?>
+```
+![11_Lab11Web](Gambar/52.Gambar_form_add.php.jpg)
+
+Gambar 46.form_add.php
+
+Akses menu admin dengan url http://localhost:8080/admin/artikel/add
+
+![11_Lab11Web](Gambar/53.Gambar_Tambah_Artikel.jpg)
+
+Gambar 47.Tambah Artikel
+
+**`Mengubah Data`**
+
+Tambahkan fungsi/method baru pada ***Controller Artikel*** dengan nama ***edit()***.
+```
+public function edit($id)
+{
+$artikel = new ArtikelModel();
+// validasi data.
+$validation = \Config\Services::validation();
+$validation->setRules(['judul' => 'required']);
+$isDataValid = $validation->withRequest($this->request)->run();
+if ($isDataValid)
+{
+$artikel->update($id, [
+'judul' => $this->request->getPost('judul'),
+'isi' => $this->request->getPost('isi'),
+]);
+return redirect('admin/artikel');
+}
+// ambil data lama
+$data = $artikel->where('id', $id)->first();
+$title = "Edit Artikel";
+return view('artikel/form_edit', compact('title', 'data'));
+}
+```
+![11_Lab11Web](Gambar/54.Gambar_Controller_edit.jpg)
+
+Gambar 48.Controller_Function edit
+
+Kemudian buat view untuk form tambah dengan nama ***form_edit.php***
+```
+<?= $this->include('template/admin_header'); ?>
+<h2><?= $title; ?></h2>
+<form action="" method="post">
+<p>
+<input type="text" name="judul" value="<?= $data['judul'];?>" >
+</p>
+<p>
+<textarea name="isi" cols="50" rows="10"><?=
+$data['isi'];?></textarea>
+</p>
+<p><input type="submit" value="Kirim" class="btn btn-large"></p>
+</form>
+<?= $this->include('template/admin_footer'); ?>
+```
+![11_Lab11Web](Gambar/55.Gambar_form_edit.php.jpg)
+
+Gambar 49.form_edit.php
+
+Akses menu admin dengan url http://localhost:8080/admin/artikel/edit/1
+
+![11_Lab11Web](Gambar/56.Gambar_Ubah_Artikel.jpg)
+
+Gambar 50.Ubah Artikel
+
+**`Menghapus Data`**
+
+Tambahkan fungsi/method baru pada ***Controller Artikel ***dengan nama ***delete()***.
+```
+public function delete($id)
+{
+$artikel = new ArtikelModel();
+$artikel->delete($id);
+return redirect('admin/artikel');
+}
+```
+![11_Lab11Web](Gambar/57.Gambar_Controller_delete.jpg)
+
+Gambar 51.Controller_delete
+
+<hr>
+
+## **`Pertanyaan dan Tugas`**
+
+<hr>
+
+Selesaikan programnya sesuai Langkah-langkah yang ada. Anda boleh melakukan
+improvisasi.
+
+>**Jawab**:
+
+Saya Coba Dengan menambahakan Artikel ketiga,
+Akses menu admin dengan url http://localhost:8080/admin/artikel/add
+
+**`Tambah Artikel`**
+
+![11_Lab11Web](Gambar/58.Gambar_tambah_artikel.jpg)
+
+Gambar 52.Tambah_artikel ketiga
+
+![11_Lab11Web](Gambar/59.Gambar_Tampilan_tambah_artikel.jpg)
+
+Gambar 53.Tampilan_tambah_artikel ketiga
+
+![11_Lab11Web](Gambar/60.Gambar_Tampilan_tambah_artikel-1.jpg)
+
+Gambar 54.Tampilan_Portal Berita_artikel ketiga
 
 
+**`Edit Artikel`**
+
+Akses menu admin dengan url http://localhost:8080/admin/artikel/edit/1
+
+![11_Lab11Web](Gambar/61.Gambar_Tampilan_edit_artikel-1.jpg)
+
+Gambar 55.Edit_artikel
+
+![11_Lab11Web](Gambar/62.Gambar_Tampilan_edit_artikel-2.jpg)
+
+Gambar 56.Tampilan_edit_artikel
+
+![11_Lab11Web](Gambar/62.Gambar_Tampilan_edit_artikel-3.jpg)
+
+Gambar 57.Tampilan_Portal Berita_edit_artikel pertama
+
+**`Hapus Artikel`**
+
+Akses menu admin dengan url http://localhost:8080/admin/artikel/
+
+![11_Lab11Web](Gambar/63.Gambar_Tampilan_hapus.jpg)
+
+Gambar 58.Hapus_artikel
+
+![11_Lab11Web](Gambar/63.Gambar_Tampilan_hapus-1.jpg)
+
+Gambar 59.Tampilan_Hapus_artikel
+
+![11_Lab11Web](Gambar/63.Gambar_Tampilan_hapus-2.jpg)
+
+Gambar 60.Tampilan_Portal Berita_Hapus_artikel ketiga
+
+<hr>
+
+# Praktikum 13: Framework Lanjutan (Modul Login)
+
+<hr>
+
+**Instruksi Praktikum**<br>
+1. Persiapkan text editor misalnya VSCode.
+2. Buka kembali folder dengan nama lab11_php_ci pada docroot webserver (htdocs)
+3. Ikuti langkah-langkah praktikum yang akan dijelaskan berikutnya.
+
+**Langkah-langkah Praktikum**<br>
+**Persiapan.**<br>
+Untuk memulai membuat modul Login, yang perlu disiapkan adalah database server 
+menggunakan MySQL. Pastikan MySQL Server sudah dapat dijalankan melalui 
+XAMPP.<br>
+**Membuat Tabel: User Login**
+
+![11_Lab11Web](Gambar/64.Gambar_Tabel_Login.jpg)
+
+Gambar 61.Tabel user Login
+
+**Membuat Tabel User**
+```
+CREATE TABLE user (
+ id INT(11) auto_increment,
+ username VARCHAR(200) NOT NULL,
+ useremail VARCHAR(200),
+ userpassword VARCHAR(200),
+ PRIMARY KEY(id)
+);
+```
+
+**Membuat Model User**<br>
+Selanjutnya adalah membuat Model untuk memproses data Login. Buat file baru pada 
+direktori ***app/Models*** dengan nama ***UserModel.php***
+```
+<?php
+namespace App\Models;
+use CodeIgniter\Model;
+class UserModel extends Model
+{
+ protected $table = 'user';
+ protected $primaryKey = 'id';
+ protected $useAutoIncrement = true;
+ protected $allowedFields = ['username', 'useremail', 'userpassword'];
+}
+```
+
+**Membuat Controller User**<br>
+Buat Controller baru dengan nama **User.php** pada direktori **app/Controllers**.
+Kemudian tambahkan method **index()** untuk menampilkan daftar user, dan method 
+**login()** untuk proses login.
+```
+<?php
+namespace App\Controllers;
+use App\Models\UserModel;
+class User extends BaseController
+{
+ public function index() 
+ {
+ $title = 'Daftar User';
+ $model = new UserModel();
+ $users = $model->findAll();
+ return view('user/index', compact('users', 'title'));
+ }
+ public function login()
+ {
+ helper(['form']);
+ $email = $this->request->getPost('email');
+ $password = $this->request->getPost('password');
+ if (!$email)
+ {
+ return view('user/login');
+ }
+ $session = session();
+ $model = new UserModel();
+ $login = $model->where('useremail', $email)->first();
+ if ($login)
+ {
+ $pass = $login['userpassword'];
+ if (password_verify($password, $pass))
+ {
+ $login_data = [
+'user_id' => $login['id'],
+ 'user_name' => $login['username'],
+ 'user_email' => $login['useremail'],
+ 'logged_in' => TRUE,
+ ];
+ $session->set($login_data);
+ return redirect('admin/artikel');
+ }
+ else
+ {
+ $session->setFlashdata("flash_msg", "Password salah.");
+ return redirect()->to('/user/login');
+ }
+ }
+ else
+ {
+ $session->setFlashdata("flash_msg", "email tidak terdaftar.");
+ return redirect()->to('/user/login');
+ }
+ }
+}
+```
+**Membuat View Login**<br>
+Buat direktori baru dengan nama **user** pada direktori **app/views**, kemudian buat file 
+baru dengan nama **login.php**.
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Login</title>
+ <link rel="stylesheet" href="<?= base_url('/style.css');?>">
+</head>
+<body>
+ <div id="login-wrapper">
+ <h1>Sign In</h1>
+ <?php if(session()->getFlashdata('flash_msg')):?>
+ <div class="alert alert-danger"><?=
+session()->getFlashdata('flash_msg') ?></div>
+ <?php endif;?>
+ <form action="" method="post">
+ <div class="mb-3">
+ <label for="InputForEmail" class="form-label">Email 
+address</label>
+ <input type="email" name="email" class="form-control"
+id="InputForEmail" value="<?= set_value('email') ?>">
+ </div>
+<div class="mb-3">
+ <label for="InputForPassword"
+class="form-label">Password</label>
+ <input type="password" name="password"
+class="form-control" id="InputForPassword">
+ </div>
+ <button type="submit" class="btn 
+btn-primary">Login</button>
+ </form>
+ </div>
+</body>
+</html>
+```
+
+**Membuat Database Seeder**<br>
+Database seeder digunakan untuk membuat data dummy. Untuk keperluan ujicoba modul 
+login, kita perlu memasukkan data user dan password kedaalam database. Untuk itu buat 
+database seeder untuk tabel user. Buka CLI, kemudian tulis perintah berikut:
+
+**`php spark make:seeder UserSeeder`**
+
+Selanjutnya, buka file **UserSeeder.php** yang berada di lokasi direktori 
+**/app/Database/Seeds/UserSeeder.php** kemudian isi dengan kode berikut:
+```
+<?php
+namespace App\Database\Seeds;
+use CodeIgniter\Database\Seeder;
+class UserSeeder extends Seeder
+{
+public function run()
+{
+$model = model('UserModel');
+$model->insert([
+'username' => 'admin',
+'useremail' => 'admin@email.com',
+'userpassword' => password_hash('admin123', PASSWORD_DEFAULT),
+]);
+}
+}
+```
+Selanjutnya buka kembali CLI dan ketik perintah berikut:
+
+**`php spark db:seed UserSeeder`**
+
+**Uji Coba Login**<br>
+Selanjutnya buka url http://localhost:8080/user/login seperti berikut:
 
