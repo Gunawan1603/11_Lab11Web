@@ -46,6 +46,7 @@ class Artikel extends BaseController
             'judul' => $this->request->getPost('judul'),
             'isi' => $this->request->getPost('isi'),
             'slug' => url_title($this->request->getPost('judul')),
+            //'gambar' => url_title($this->request->getPost('gambar')),
          ]);
          return redirect('admin/artikel');
     }

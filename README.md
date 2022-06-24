@@ -603,7 +603,7 @@ Buat view baru untuk halaman detail dengan nama ***app/views/artikel/detail.php*
 <h2><?= $artikel['judul']; ?></h2>
 <img src="<?= base_url('/gambar/' . $artikel['gambar']);?>" alt="<?=
 $artikel['judul']; ?>">
-<p><?= $row['isi']; ?></p>
+<p><?= $artikel['isi']; ?></p>
 </article>
 <?= $this->include('template/footer'); ?>
 ```
@@ -697,12 +697,14 @@ $row['id']);?>">Hapus</a>
 
 Gambar 42.admin_index.php
 
-Selanjutnya kita buat template halaman admin **di app/Views/template** dengan nama : 
+Selanjutnya kita buat template halaman admin **di app/Views/template** dengan nama :<br>
 `admin_header.php`
 
 `admin_footer.php`
 
-lalu buat `adminstyle.css` **di folder ci4/public**
+lalu buat css baru **di folder ci4/public** dengan nama :
+
+`adminstyle.css`
 
 Tambahkan routing untuk menu admin seperti berikut:
 ```
@@ -939,6 +941,12 @@ CREATE TABLE user (
  PRIMARY KEY(id)
 );
 ```
+Selanjutnya Buka Url : <http://localhost/phpmyadmin/index.php?route=/database/sql&db=lab_ci4>
+
+![11_Lab11Web](Gambar/65.Gambar_Tabel_Login_mySQL.jpg)
+![11_Lab11Web](Gambar/65.Gambar_Tabel_Login_mySQL-1.jpg)
+
+Gambar 62.MySQL Server User Login
 
 **Membuat Model User**<br>
 Selanjutnya adalah membuat Model untuk memproses data Login. Buat file baru pada 
@@ -955,6 +963,9 @@ class UserModel extends Model
  protected $allowedFields = ['username', 'useremail', 'userpassword'];
 }
 ```
+![11_Lab11Web](Gambar/66.Gambar_UserModel.php.jpg)
+
+Gambar 63.UserModel.php
 
 **Membuat Controller User**<br>
 Buat Controller baru dengan nama **User.php** pada direktori **app/Controllers**.
@@ -1013,6 +1024,12 @@ class User extends BaseController
  }
 }
 ```
+![11_Lab11Web](Gambar/67.Gambar_User.php.jpg)
+![11_Lab11Web](Gambar/67.Gambar_User.php-1.jpg)
+
+Gambar 64.Membuat Controller User.php
+
+
 **Membuat View Login**<br>
 Buat direktori baru dengan nama **user** pada direktori **app/views**, kemudian buat file 
 baru dengan nama **login.php**.
@@ -1022,7 +1039,7 @@ baru dengan nama **login.php**.
 <head>
  <meta charset="UTF-8">
  <title>Login</title>
- <link rel="stylesheet" href="<?= base_url('/style.css');?>">
+ <link rel="stylesheet" href="<?= base_url('/loginstyle.css');?>">
 </head>
 <body>
  <div id="login-wrapper">
@@ -1051,6 +1068,11 @@ btn-primary">Login</button>
 </body>
 </html>
 ```
+Selanjutnya Kita Buat CSS baru di C:\xampp\htdocs\lab11_php_ci\ci4\public Dengan nama : **loginstyle.css**
+
+![11_Lab11Web](Gambar/68.Gambar_login.php.jpg)
+
+Gambar 65.Membuat View Login.php
 
 **Membuat Database Seeder**<br>
 Database seeder digunakan untuk membuat data dummy. Untuk keperluan ujicoba modul 
@@ -1058,6 +1080,10 @@ login, kita perlu memasukkan data user dan password kedaalam database. Untuk itu
 database seeder untuk tabel user. Buka CLI, kemudian tulis perintah berikut:
 
 **`php spark make:seeder UserSeeder`**
+
+![11_Lab11Web](Gambar/69.Gambar_CLI_UserSeeder.jpg)
+
+Gambar 66.CLI_UserSeeder
 
 Selanjutnya, buka file **UserSeeder.php** yang berada di lokasi direktori 
 **/app/Database/Seeds/UserSeeder.php** kemudian isi dengan kode berikut:
@@ -1078,10 +1104,328 @@ $model->insert([
 }
 }
 ```
+![11_Lab11Web](Gambar/70.Gambar_CLI_UserSeeder.php.jpg)
+
+Gambar 67.Membuat CLI_UserSeeder.php
+
 Selanjutnya buka kembali CLI dan ketik perintah berikut:
 
 **`php spark db:seed UserSeeder`**
 
+![11_Lab11Web](Gambar/71.Gambar_CLI_seedUserSeeder.jpg)
+
+Gambar 68.CLI_seedUserSeeder
+
 **Uji Coba Login**<br>
 Selanjutnya buka url http://localhost:8080/user/login seperti berikut:
+
+![11_Lab11Web](Gambar/72.Gambar_Login_Form.jpg)
+
+Gambar 69.Login Form
+
+**Menambahkan Auth Filter**
+
+Selanjutnya membuat filer untuk halaman admin. Buat file baru dengan nama **Auth.php**
+pada direktori **app/Filters.**
+```
+<?php namespace App\Filters;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\Filters\FilterInterface;
+class Auth implements FilterInterface
+{
+public function before(RequestInterface $request, $arguments = null)
+{
+// jika user belum login
+if(! session()->get('logged_in')){
+// maka redirct ke halaman login
+return redirect()->to('/user/login');
+}
+}
+public function after(RequestInterface $request, ResponseInterface
+$response, $arguments = null)
+{
+// Do something here
+}
+}
+?>
+```
+![11_Lab11Web](Gambar/73.Gambar_Auth.php.jpg)
+
+Gambar 70.Membuat Auth.php
+
+Selanjutnya buka file **app/Config/Filters.php** tambahkan kode berikut:
+```
+'auth' => \App\Filters\Auth::class
+```
+![11_Lab11Web](Gambar/74.Gambar_Filters.php.jpg)
+
+Gambar 71.Config Filters
+
+Selanjutnya buka file **app/Config/Routes.php** dan sesuaikan kodenya.
+
+![11_Lab11Web](Gambar/75.Gambar_Routes.php.jpg)
+
+Gambar 72.Config Routes
+
+Percobaan Akses Menu Admin<br>
+Buka url dengan alamat http://localhost:8080/admin/artikel<br>
+ketika alamat tersebut
+diakses maka, akan dimuculkan halaman login.
+
+![11_Lab11Web](Gambar/76.Gambar_Login_Admin.jpg)
+
+Gambar 73.Login Admin
+
+**Fungsi Logout**
+
+Tambahkan method logout pada Controller User seperti berikut:
+```
+public function logout()
+{
+session()->destroy();
+return redirect()->to('/user/login');
+}
+```
+![11_Lab11Web](Gambar/77.Gambar_Fungsi_Logout.jpg)
+
+Gambar 74.Menambah Fungsi_Logout
+
+<hr>
+
+# Pertanyaan dan Tugas
+
+<hr>
+
+**`Selesaikan programnya sesuai Langkah-langkah yang ada. Anda boleh melakukan
+improvisasi.`**
+
+> **Jawab:**
+
+Saya Tambahkan Routes Logout di C:\xampp\htdocs\lab11_php_ci\ci4\app\Config :
+
+![11_Lab11Web](Gambar/78.Gambar_addRoutes_Logout.jpg)
+
+Gambar 75.Menambah Fungsi_Logout
+
+# **`Login Admin`**
+
+Buka url dengan alamat http://localhost:8080/artikel<br>
+Selanjutnya saya coba masuk Login dengan memasukkan kode :
+
+**`Email :admin@email.com`**<br>
+**`Password :admin123`**
+
+![11_Lab11Web](Gambar/79.Gambar_Login_admin.jpg)
+
+Gambar 76. Login_admin
+
+Apabila Email Dan Password Benar, Maka akan Masuk Ke halaman Admin Portal Berita :
+
+![11_Lab11Web](Gambar/80.Gambar_admin_portal_berita.jpg)
+
+Gambar 77. Login_admin
+
+Dan apabila kita memasukkan Email dan Password yang salah maka akan muncul **Comment : email tidak terdaftar**
+
+![11_Lab11Web](Gambar/81.Gambar_Login_admin_salah.jpg)
+![11_Lab11Web](Gambar/82.Gambar_Login_admin_salah_comment.jpg)
+
+Gambar 78. Login_admin email tidak terdaftar
+
+# **`Tambah Menu Navigasi admin dan Logout`**
+
+Saya sudah menambahkan Menu admin :
+
+![11_Lab11Web](Gambar/85.Gambar_artikel_Nav_Admin.jpg)
+
+Gambar 79. Tampilan artikel_Nav_Admin
+
+Setelah masuk Admin Maka akan di arahkan ke halam Artikel/admin/indek : Admin Portal Berita
+
+![11_Lab11Web](Gambar/86.Gambar_Admin_portal_berita_tambah.jpg)
+
+Gambar 80. Tampilan Admin_portal_berita_tambah
+
+Setelah masuk **Admin portal_berita > tambah Artikel** Maka akan masuk ke Login : saya masukkan Email & pasword admin
+
+![11_Lab11Web](Gambar/87.Gambar_Admin_portal_berita_tambah_login.jpg)
+
+Gambar 81. Tampilan Admin_portal_berita_tambah_login
+
+Setelah berhasil Tambah artikel 
+
+![11_Lab11Web](Gambar/88.Gambar_Admin_portal_berita_tambah_artikel_Berhasil.jpg)
+
+Gambar 82. Tampilan Admin_portal_berita_tambah_artikel
+
+Berikut tampilan artikel berhasil di tambahkan.
+
+![11_Lab11Web](Gambar/89.Gambar_Admin_portal_berita_tambah_artikel_Berhasil.jpg)
+
+Gambar 83. Tampilan Admin_portal_berita_tambah_artikel
+
+Selanjutnya saya akan mencoba menu Logout :
+
+![11_Lab11Web](Gambar/90.Gambar_Nav_Logout.jpg)
+
+Gambar 84. Tampilan Nav_Logout
+
+Setelah itu kita akan di arahkan ke halaman Login kembali
+
+![11_Lab11Web](Gambar/91.Gambar_Nav_Logout-Login.jpg)
+
+Gambar 85. Tampilan Nav_Logout-Login
+
+**`Apabila kita mau masuk halan Admin kita masukkan kembali Email dan password tapi kalau kita keluar tinggal kita close browser`**
+
+<hr>
+
+Cukup Sekian Penjelasan dari saya.
+
+**TERIMAKASIH**
+
+<hr>
+
+## Praktikum 14: Pagination dan Pencarian
+
+<hr>
+
+**Instruksi Praktikum**
+1. Persiapkan text editor misalnya **VSCode.**
+2. Buka kembali folder dengan nama **lab11_php_ci** pada docroot webserver **(htdocs)**
+3. Ikuti langkah-langkah praktikum yang akan dijelaskan berikutnya.<br>
+**Langkah-langkah Praktikum**<br>
+**Membuat Pagination**<br>
+Pagination merupakan proses yang digunakan untuk membatasi tampilan yang panjang
+dari data yang banyak pada sebuah website. Fungsi pagination adalah memecah
+tampilan menjadi beberapa halaman tergantung banyaknya data yang akan ditampilkan
+pada setiap halaman.
+
+Pada Codeigniter 4, fungsi pagination sudah tersedia pada Library sehingga cukup
+mudah menggunakannya.
+Untuk membuat pagination, buka Kembali **Controller Artikel**, kemudian modifikasi
+kode pada method admin_index seperti berikut.
+```
+public function admin_index()
+{
+$title = 'Daftar Artikel';
+$model = new ArtikelModel();
+$data = [
+'title' => $title,
+'artikel' => $model->paginate(10), #data dibatasi 10 record per
+halaman
+'pager' => $model->pager,
+];
+return view('artikel/admin_index', $data);
+}
+```
+Kemudian buka file **views/artikel/admin_index.php** dan tambahkan kode berikut
+dibawah deklarasi tabel data.
+```
+<?= $pager->links(); ?>
+```
+Selanjutnya buka kembali menu daftar artikel, tambahkan data lagi untuk melihat
+hasilnya.
+
+
+Gambar 14.1 Pagination
+
+**Membuat Pencarian**<br>
+Pencarian data digunakan untuk memfilter data.<br>
+Untuk membuat pencarian data, buka kembali **Controller Artikel**, pada method
+**admin_index** ubah kodenya seperti berikut:
+```
+public function admin_index()
+{
+$title = 'Daftar Artikel';
+$q = $this->request->getVar('q') ?? '';
+$model = new ArtikelModel();
+$data = [
+'title' => $title,
+'q' => $q,
+'artikel' => $model->like('judul', $q)->paginate(10), # data
+dibatasi 10 record per halaman
+'pager' => $model->pager,
+];
+return view('artikel/admin_index', $data);
+}
+```
+Kemudian buka kembali file **views/artikel/admin_index.php** dan tambahkan form
+pencarian sebelum deklarasi tabel seperti berikut:
+```
+<form method="get" class="form-search">
+<input type="text" name="q" value="<?= $q; ?>" placeholder="Cari data">
+<input type="submit" value="Cari" class="btn btn-primary">
+</form>
+```
+Dan pada link pager ubah seperti berikut.
+```
+<?= $pager->only(['q'])->links(); ?>
+```
+Selanjutnya ujicoba dengan membuka kembali halaman admin artikel, masukkan kata
+kunci tertentu pada form pencarian.
+
+
+Gambar 14.2 Pencarian Data
+
+**Upload Gambar**<br>
+Menambahkan fungsi unggah gambar pada tambah artikel. Buka kembali **Controller**
+Artikel, sesuaikan kode pada method **add** seperti berikut:
+```
+public function add()
+{
+// validasi data.
+$validation = \Config\Services::validation();
+$validation->setRules(['judul' => 'required']);
+$isDataValid = $validation->withRequest($this->request)->run();
+if ($isDataValid)
+{
+$file = $this->request->getFile('gambar');
+$file->move(ROOTPATH . 'public/gambar');
+$artikel = new ArtikelModel();
+$artikel->insert([
+'judul' => $this->request->getPost('judul'),
+'isi' => $this->request->getPost('isi'),
+'slug' => url_title($this->request->getPost('judul')),
+'gambar' => $file->getName(),
+]);
+return redirect('admin/artikel');
+}
+$title = "Tambah Artikel";
+return view('artikel/form_add', compact('title'));
+}
+```
+Kemudian pada file **views/artikel/form_add.php** tambahkan field input file seperti
+berikut.
+```
+<p>
+<input type="file" name="gambar">
+</p>
+```
+Dan sesuaikan tag form dengan menambahkan *ecrypt type* seperti berikut.
+```
+<form action="" method="post" enctype="multipart/form-data">
+```
+Ujicoba file upload dengan mengakses menu tambah artikel.
+
+
+Gambar 14.3 Upload Gambar
+
+<hr>
+
+# Pertanyaan dan Tugas
+
+<hr>
+
+**Selesaikan programnya sesuai Langkah-langkah yang ada. Anda boleh melakukan
+improvisasi>**
+
+>**Jawab:**
+
+
+
+
+
+
 
