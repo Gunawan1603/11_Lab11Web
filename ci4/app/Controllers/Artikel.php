@@ -27,11 +27,17 @@ class Artikel extends BaseController
     }
     public function admin_index()
    {
-    $title = 'Daftar Artikel';
-    $model = new ArtikelModel();
-    $artikel = $model->findAll();
-    return view('artikel/admin_index', compact('artikel', 'title'));
-   }
+      $title = 'Daftar Artikel';
+      $q = $this->request->getVar('q') ?? '';
+      $model = new ArtikelModel();
+      $data = [
+          'title'   => $title,
+          'q'       => $q,
+          'artikel' => $model->like('judul', $q)->paginate(4, 'bootstrap'), #data dibatasi 4 record perhalaman
+          'pager'   => $model->pager,
+      ];
+      return view('artikel/admin_index', $data);
+      }
    public function add()
    {
     // validasi data.
@@ -41,12 +47,15 @@ class Artikel extends BaseController
     
     if ($isDataValid)
     {
+      $file = $this->request->getFile('gambar');
+      $file->move(ROOTPATH . 'public/gambar');
+
        $artikel = new ArtikelModel();
        $artikel->insert([
             'judul' => $this->request->getPost('judul'),
             'isi' => $this->request->getPost('isi'),
             'slug' => url_title($this->request->getPost('judul')),
-            //'gambar' => url_title($this->request->getPost('gambar')),
+            'gambar' => $file->getName(),
          ]);
          return redirect('admin/artikel');
     }
@@ -81,5 +90,6 @@ class Artikel extends BaseController
       $artikel->delete($id);
       return redirect('admin/artikel');
    }
+
 }
 ?>

@@ -1279,8 +1279,6 @@ Gambar 85. Tampilan Nav_Logout-Login
 
 **`Apabila kita mau masuk halan Admin kita masukkan kembali Email dan password tapi kalau kita keluar tinggal kita close browser`**
 
-<hr>
-
 Cukup Sekian Penjelasan dari saya.
 
 **TERIMAKASIH**
@@ -1320,16 +1318,26 @@ halaman
 return view('artikel/admin_index', $data);
 }
 ```
+![11_Lab11Web](Gambar/92.Gambar_admin_index_pagination.jpg)
+
+Gambar 86. modifikasi
+kode pada method admin_index
+
 Kemudian buka file **views/artikel/admin_index.php** dan tambahkan kode berikut
 dibawah deklarasi tabel data.
 ```
 <?= $pager->links(); ?>
 ```
+![11_Lab11Web](Gambar/93.Gambar_admin_index_pagination_link.jpg)
+
+Gambar 87. Pagination_link
+
 Selanjutnya buka kembali menu daftar artikel, tambahkan data lagi untuk melihat
 hasilnya.
 
+![11_Lab11Web](Gambar/96.Gambar_Pagination.jpg)
 
-Gambar 14.1 Pagination
+Gambar 88. Pagination
 
 **Membuat Pencarian**<br>
 Pencarian data digunakan untuk memfilter data.<br>
@@ -1351,6 +1359,10 @@ dibatasi 10 record per halaman
 return view('artikel/admin_index', $data);
 }
 ```
+![11_Lab11Web](Gambar/97.Gambar_Pagination.admin.index.filter.data.jpg)
+
+Gambar 89. Pagination.admin.index.filter.data
+
 Kemudian buka kembali file **views/artikel/admin_index.php** dan tambahkan form
 pencarian sebelum deklarasi tabel seperti berikut:
 ```
@@ -1363,11 +1375,17 @@ Dan pada link pager ubah seperti berikut.
 ```
 <?= $pager->only(['q'])->links(); ?>
 ```
+![11_Lab11Web](Gambar/98.Gambar_form_pencarian.jpg)
+![11_Lab11Web](Gambar/99.Gambar_form_pencarian-1.jpg)
+
+Gambar 90. form_pencarian_admin_index.php
+
 Selanjutnya ujicoba dengan membuka kembali halaman admin artikel, masukkan kata
 kunci tertentu pada form pencarian.
 
+![11_Lab11Web](Gambar/100.Gambar_Pencarian_Data.jpg)
 
-Gambar 14.2 Pencarian Data
+Gambar 91. Pencarian Data
 
 **Upload Gambar**<br>
 Menambahkan fungsi unggah gambar pada tambah artikel. Buka kembali **Controller**
@@ -1396,6 +1414,10 @@ $title = "Tambah Artikel";
 return view('artikel/form_add', compact('title'));
 }
 ```
+![11_Lab11Web](Gambar/101.Gambar_Fungsi_method_add_gambar.jpg)
+
+Gambar 92. Upload Gambar
+
 Kemudian pada file **views/artikel/form_add.php** tambahkan field input file seperti
 berikut.
 ```
@@ -1407,10 +1429,16 @@ Dan sesuaikan tag form dengan menambahkan *ecrypt type* seperti berikut.
 ```
 <form action="" method="post" enctype="multipart/form-data">
 ```
+![11_Lab11Web](Gambar/102.Gambar_form_add.php_gambar.jpg)
+
+Gambar 93. add ecrypt type
+
 Ujicoba file upload dengan mengakses menu tambah artikel.
 
 
-Gambar 14.3 Upload Gambar
+![11_Lab11Web](Gambar/104.Gambar_Upload_Gambar.jpg)
+
+Gambar 94. Upload Gambar
 
 <hr>
 
@@ -1422,10 +1450,42 @@ Gambar 14.3 Upload Gambar
 improvisasi>**
 
 >**Jawab:**
+ 
+ **`Tambah Artikel & Upload Gambar`**
+ 
+Saya Buat Artikel Keempat dan mengupload gambar artikel :
+
+![11_Lab11Web](Gambar/105.Gambar_Upload_Gambar-1.jpg)
+
+Gambar 95. Upload Gambar
 
 
+![11_Lab11Web](Gambar/107.Gambar_Tambah_artikel.jpg)
 
+Disini saya sudah setting untuk tampilan saya batasi 4 halaman :
 
+Dan Selanjutnya kita buat artikel lagi dan kita buka Navigasi Halaman Ke 2 :
 
+![11_Lab11Web](Gambar/107.Gambar_Tambah_artikel-1.jpg)
 
+ **`Cari/Filter Artikel`**
+ 
+ saya coba Cari/filter untuk Artikel Kelima :
+ 
+ ![11_Lab11Web](Gambar/108.Gambar_Cari_artikel.jpg)
+
+ **`Tampilan Artikel Di portal Berita`**
+ 
+  ![11_Lab11Web](Gambar/109.Gambar_Tampilan_portal-berita.jpg)
+  
+  Tampilan Detail Portal Berita :
+
+  ![11_Lab11Web](Gambar/110.Gambar_Tampilan_portal-berita_keenam.jpg)
+  
+  <hr>
+  
+  Cukup Sekian Penjelasan Dari saya
+  
+  **TERIMAKASIH**
+  <hr>
 
